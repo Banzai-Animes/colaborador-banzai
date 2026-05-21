@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Colaborador — Banzai Animes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #08080f;
+      color: #e8e8f0;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(10,10,18,0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(139,92,246,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 8px;
+    }
+    .logo { flex-shrink: 0; }
+    .header-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .badge-colab {
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: #34d399;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+    }
+    .btn-sair {
+      background: none;
+      border: 1px solid rgba(139,92,246,0.2);
+      color: #9090b0;
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .btn-sair:hover { color: #fff; border-color: rgba(139,92,246,0.5); }
+    @media (min-width: 600px) {
+      .header { padding: 16px 40px; }
+      .badge-colab { font-size: 11px; padding: 4px 10px; }
+      .btn-sair { font-size: 13px; padding: 7px 14px; }
+    }
+
+    .admin-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    .aviso-restrito {
+      background: rgba(245,158,11,0.08);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #fbbf24;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .aviso-restrito span { font-size: 18px; flex-shrink: 0; }
+
+    .painel {
+      background: #0e0e1a;
+      border: 1px solid rgba(139,92,246,0.12);
+      border-radius: 16px;
+      padding: 20px 16px;
+    }
+
+    .painel-titulo {
+      font-size: 14px;
+      font-weight: 700;
+      color: #c4b5fd;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-grupo {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6060a0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input, textarea, select {
+      background: #0b0b16;
+      border: 1px solid rgba(139,92,246,0.15);
+      border-radius: 9px;
+      color: #e8e8f0;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236060a0' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: rgba(124,58,237,0.5);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.07);
+    }
+    textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+    select option { background: #0e0e1a; }
+
+    .form-linha {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    /* Em telas bem pequenas, colunas viram 1 */
+    @media (max-width: 400px) {
+      .form-linha {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .divisor {
+      border: none;
+      border-top: 1px solid rgba(139,92,246,0.08);
+      margin: 18px 0;
+    }
+
+    .temporadas-wrap { display: flex; flex-direction: column; gap: 14px; }
+
+    .temporada-bloco {
+      background: #0b0b16;
+      border: 1px solid rgba(139,92,246,0.1);
+      border-radius: 12px;
+      padding: 14px 12px;
+    }
+
+    .temporada-bloco-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+      gap: 8px;
+    }
+
+    .temporada-bloco-titulo {
+      font-size: 13px;
+      font-weight: 700;
+      color: #a78bfa;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .btn-remover {
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
+      color: #f87171;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-remover:hover { background: rgba(239,68,68,0.2); }
+
+    .episodios-form { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+
+    .ep-form-bloco {
+      border: 1px solid rgba(139,92,246,0.08);
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(124,58,237,0.03);
+    }
+
+    .ep-form-linha {
+      display: grid;
+      grid-template-columns: 60px 1fr 70px 36px;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 400px) {
+      .ep-form-linha {
+        grid-template-columns: 55px 1fr 60px 32px;
+        gap: 5px;
+      }
+    }
+
+    .btn-icon {
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(124,58,237,0.2);
+      color: #a78bfa;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .btn-icon:hover { background: rgba(124,58,237,0.22); color: #fff; }
+    .btn-icon.remover {
+      background: rgba(239,68,68,0.08);
+      border-color: rgba(239,68,68,0.15);
+      color: #f87171;
+      font-size: 13px;
+    }
+    .btn-icon.remover:hover { background: rgba(239,68,68,0.18); }
+
+    .ep-opcoes-lista { display: flex; flex-direction: column; gap: 6px; margin-bottom: 6px; }
+
+    .ep-opcao-linha {
+      display: grid;
+      grid-template-columns: 1fr 70px 36px;
+      gap: 6px;
+      align-items: center;
+    }
+
+    /* Esconde campo de qualidade em telas muito pequenas */
+    @media (max-width: 360px) {
+      .ep-opcao-linha {
+        grid-template-columns: 1fr 36px;
+      }
+      .op-qual { display: none; }
+    }
+
+    .ep-opcao-linha input, .ep-opcao-linha select {
+      font-size: 12px;
+      padding: 8px 10px;
+    }
+
+    /* Campo URL ocupa linha inteira abaixo */
+    .op-url-wrap {
+      grid-column: 1 / -1;
+    }
+    .op-url-wrap input {
+      font-size: 12px;
+      padding: 8px 10px;
+    }
+
+    .ep-opcao-linha-full {
+      display: grid;
+      grid-template-columns: 110px 70px 1fr 36px;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    @media (max-width: 480px) {
+      .ep-opcao-linha-full {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+      }
+      .ep-opcao-linha-full .op-url {
+        grid-column: 1 / -1;
+      }
+      .ep-opcao-linha-full .btn-icon.remover {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: end;
+      }
+    }
+
+    .btn-add-opcao {
+      background: none;
+      border: 1px dashed rgba(124,58,237,0.2);
+      color: #555575;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+      transition: all 0.2s;
+      min-height: 36px;
+    }
+    .btn-add-opcao:hover { color: #a78bfa; border-color: rgba(124,58,237,0.4); }
+
+    .btn-add-ep {
+      background: none;
+      border: 1px dashed rgba(124,58,237,0.25);
+      color: #7c3aed;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      width: 100%;
+      margin-top: 8px;
+      transition: all 0.2s;
+      min-height: 40px;
+    }
+    .btn-add-ep:hover { background: rgba(124,58,237,0.07); border-style: solid; }
+
+    .btn-add-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-add-temp {
+      flex: 1;
+      min-width: 100px;
+      background: rgba(124,58,237,0.08);
+      border: 1px dashed rgba(124,58,237,0.3);
+      color: #a78bfa;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-add-temp:hover { background: rgba(124,58,237,0.14); }
+
+    .btn-add-filme {
+      flex: 1;
+      min-width: 100px;
+      background: rgba(245,158,11,0.07);
+      border: 1px dashed rgba(245,158,11,0.3);
+      color: #fbbf24;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-add-filme:hover { background: rgba(245,158,11,0.13); }
+
+    .btn-add-ova {
+      flex: 1;
+      min-width: 100px;
+      background: rgba(16,185,129,0.07);
+      border: 1px dashed rgba(16,185,129,0.3);
+      color: #34d399;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 12px 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .btn-add-ova:hover { background: rgba(16,185,129,0.13); }
+
+    .tipo-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.5px;
+    }
+    .tipo-badge.temporada { background: rgba(124,58,237,0.15); color: #a78bfa; }
+    .tipo-badge.filme { background: rgba(245,158,11,0.15); color: #fbbf24; }
+    .tipo-badge.ova { background: rgba(16,185,129,0.15); color: #34d399; }
+
+    .acoes {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-salvar {
+      flex: 1;
+      padding: 14px;
+      background: #7c3aed;
+      border: none;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      letter-spacing: 0.3px;
+      min-height: 48px;
+    }
+    .btn-salvar:hover { background: #6d28d9; }
+
+    .btn-limpar {
+      padding: 14px 18px;
+      background: none;
+      border: 1px solid rgba(139,92,246,0.2);
+      color: #6060a0;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      min-height: 48px;
+      white-space: nowrap;
+    }
+    .btn-limpar:hover { color: #fff; border-color: rgba(139,92,246,0.4); }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 16px;
+      left: 16px;
+      background: #7c3aed;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 14px 18px;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(124,58,237,0.4);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s;
+      z-index: 999;
+      pointer-events: none;
+      text-align: center;
+    }
+    @media (min-width: 500px) {
+      .toast {
+        left: auto;
+        width: auto;
+        max-width: 360px;
+      }
+    }
+    .toast.visivel { opacity: 1; transform: translateY(0); }
+    .toast.erro { background: #dc2626; box-shadow: 0 8px 30px rgba(220,38,38,0.4); }
+
+    /* Gêneros: 2 colunas no mobile, 3 no desktop */
+    .generos-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      background: #0b0b16;
+      border: 1px solid rgba(139,92,246,0.15);
+      border-radius: 9px;
+      padding: 10px;
+      max-height: 220px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(124,58,237,0.3) transparent;
+    }
+    @media (min-width: 480px) {
+      .generos-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .genero-check {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #9090b0;
+      cursor: pointer;
+      padding: 5px 6px;
+      border-radius: 5px;
+      transition: background 0.15s;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 400;
+    }
+    .genero-check:hover { background: rgba(124,58,237,0.08); color: #e8e8f0; }
+    .genero-check input[type="checkbox"] {
+      accent-color: #7c3aed;
+      cursor: pointer;
+      width: 15px;
+      height: 15px;
+      min-width: 15px;
+      min-height: 15px;
+      padding: 0 !important;
+      border: none;
+      background: revert;
+      box-shadow: none;
+      -webkit-appearance: checkbox;
+      appearance: checkbox;
+      flex-shrink: 0;
+    }
+
+    /* Seção gêneros+classificação+áudio: 1 coluna no mobile */
+    .form-linha-3 {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .anime-item {
+      background: #0e0e1a;
+      border: 1px solid rgba(139,92,246,0.1);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.2s;
+    }
+    .anime-item:hover { border-color: rgba(124,58,237,0.35); background: rgba(124,58,237,0.04); }
+    .anime-item img { width: 38px; height: 52px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+    .anime-item-info { flex: 1; min-width: 0; }
+    .anime-item-nome { font-size: 13px; font-weight: 600; color: #d0d0e8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .anime-item-meta { font-size: 11px; color: #44446a; margin-top: 2px; }
+    .anime-item-acoes { display: flex; gap: 6px; flex-shrink: 0; }
+    .btn-editar {
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(124,58,237,0.2);
+      color: #a78bfa;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      min-height: 34px;
+    }
+    .btn-editar:hover { background: rgba(124,58,237,0.22); }
+
+    /* Desktop: padding maior */
+    @media (min-width: 600px) {
+      .admin-container { padding: 36px 40px; }
+      .header { padding: 16px 40px; }
+      .painel { padding: 28px; }
+    }
+    
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo"><a href="index.html"><img src="image/logo.png" alt="Banzai Animes" style="height:36px;width:auto;display:block;" /></a></div>
+    <div class="header-right">
+      <span class="badge-colab">📋 COLABORADOR</span>
+      <button class="btn-sair" id="btnSair">← Sair</button>
+    </div>
+  </header>
+
+  <div class="admin-container">
+
+    <div class="aviso-restrito">
+      <span>⚠️</span>
+      <div>Você pode <strong>adicionar novos animes</strong> e <strong>editar apenas os animes que você adicionou</strong>.</div>
+    </div>
+
+    <div class="painel">
+      <div class="painel-titulo">📋 <span id="formTitulo">Adicionar Novo Anime</span></div>
+
+      <div class="form-grupo">
+        <label>Nome do Anime <span id="nomeCount" style="font-weight:400;color:#44446a;float:right">0/78</span></label>
+        <input type="text" id="nome" placeholder="Ex: Naruto" maxlength="78" oninput="contarChars('nome','nomeCount',78)" />
+        <span id="nomeAviso" style="display:none;font-size:11px;color:#f87171;margin-top:4px">⚠️ Título muito longo, por favor encurte o nome do anime.</span>
+      </div>
+
+      <div class="form-grupo">
+        <label>Nome Original (japonês) <span id="nomeOriginalCount" style="font-weight:400;color:#44446a;float:right">0/78</span></label>
+        <input type="text" id="nomeOriginal" placeholder="Ex: ナルト" maxlength="78" oninput="contarChars('nomeOriginal','nomeOriginalCount',78)" />
+        <span id="nomeOriginalAviso" style="display:none;font-size:11px;color:#f87171;margin-top:4px">⚠️ Título original muito longo, por favor encurte.</span>
+      </div>
+
+      <div class="form-linha">
+        <div class="form-grupo">
+          <label>Ano</label>
+            <input type="number" id="ano" placeholder="2024" min="1900" max="2099" oninput="this.value=this.value.slice(0,4)" />
+        </div>
+        <div class="form-grupo">
+          <label>Status</label>
+          <select id="status">
+            <option value="em-andamento">Em Andamento</option>
+            <option value="completo">Completo</option>
+            <option value="em-breve">Em Breve</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Gêneros ocupa linha inteira, classificação e áudio embaixo lado a lado -->
+      <div class="form-grupo">
+        <label>Gêneros</label>
+        <div class="generos-grid" id="generosGrid">
+          <label class="genero-check"><input type="checkbox" value="Ação" class="genero-cb" /> Ação</label>
+          <label class="genero-check"><input type="checkbox" value="Artes Marciais" class="genero-cb" /> Artes Marciais</label>
+          <label class="genero-check"><input type="checkbox" value="Aventura" class="genero-cb" /> Aventura</label>
+          <label class="genero-check"><input type="checkbox" value="Comédia" class="genero-cb" /> Comédia</label>
+          <label class="genero-check"><input type="checkbox" value="Demônios" class="genero-cb" /> Demônios</label>
+          <label class="genero-check"><input type="checkbox" value="Drama" class="genero-cb" /> Drama</label>
+          <label class="genero-check"><input type="checkbox" value="Ecchi" class="genero-cb" /> Ecchi</label>
+          <label class="genero-check"><input type="checkbox" value="Espaço" class="genero-cb" /> Espaço</label>
+          <label class="genero-check"><input type="checkbox" value="Esporte" class="genero-cb" /> Esporte</label>
+          <label class="genero-check"><input type="checkbox" value="Fantasia" class="genero-cb" /> Fantasia</label>
+          <label class="genero-check"><input type="checkbox" value="Ficção Científica" class="genero-cb" /> Ficção Científica</label>
+          <label class="genero-check"><input type="checkbox" value="Harém" class="genero-cb" /> Harém</label>
+          <label class="genero-check"><input type="checkbox" value="Horror" class="genero-cb" /> Horror</label>
+          <label class="genero-check"><input type="checkbox" value="Jogos" class="genero-cb" /> Jogos</label>
+          <label class="genero-check"><input type="checkbox" value="Isekai" class="genero-cb" /> Isekai</label>
+          <label class="genero-check"><input type="checkbox" value="Magia" class="genero-cb" /> Magia</label>
+          <label class="genero-check"><input type="checkbox" value="Mecha" class="genero-cb" /> Mecha</label>
+          <label class="genero-check"><input type="checkbox" value="Mistério" class="genero-cb" /> Mistério</label>
+          <label class="genero-check"><input type="checkbox" value="Militar" class="genero-cb" /> Militar</label>
+          <label class="genero-check"><input type="checkbox" value="Musical" class="genero-cb" /> Musical</label>
+          <label class="genero-check"><input type="checkbox" value="Paródia" class="genero-cb" /> Paródia</label>
+          <label class="genero-check"><input type="checkbox" value="Psicológico" class="genero-cb" /> Psicológico</label>
+          <label class="genero-check"><input type="checkbox" value="Romance" class="genero-cb" /> Romance</label>
+          <label class="genero-check"><input type="checkbox" value="Seinen" class="genero-cb" /> Seinen</label>
+          <label class="genero-check"><input type="checkbox" value="Shoujo-ai" class="genero-cb" /> Shoujo-ai</label>
+          <label class="genero-check"><input type="checkbox" value="Shounen" class="genero-cb" /> Shounen</label>
+          <label class="genero-check"><input type="checkbox" value="Slice of Life" class="genero-cb" /> Slice of Life</label>
+          <label class="genero-check"><input type="checkbox" value="Sobrenatural" class="genero-cb" /> Sobrenatural</label>
+          <label class="genero-check"><input type="checkbox" value="Suspense" class="genero-cb" /> Suspense</label>
+          <label class="genero-check"><input type="checkbox" value="Superpoder" class="genero-cb" /> Superpoder</label>
+          <label class="genero-check"><input type="checkbox" value="Vampiros" class="genero-cb" /> Vampiros</label>
+          <label class="genero-check"><input type="checkbox" value="Vida Escolar" class="genero-cb" /> Vida Escolar</label>
+        </div>
+      </div>
+
+      <div class="form-linha">
+        <div class="form-grupo">
+          <label>Classificação</label>
+          <select id="classificacao">
+            <option value="Livre">Livre</option>
+            <option value="10+">10+</option>
+            <option value="12+">12+</option>
+            <option value="14+" selected>14+</option>
+            <option value="16+">16+</option>
+            <option value="18+">18+</option>
+          </select>
+        </div>
+        <div class="form-grupo">
+          <label>Áudio</label>
+          <select id="audio">
+            <option value="">Não informado</option>
+            <option value="leg">Legendado (LEG)</option>
+            <option value="dub">Dublado (DUB)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-linha">
+        <div class="form-grupo">
+          <label>Estúdio</label>
+          <input type="text" id="estudio" placeholder="Ex: MAPPA" />
+        </div>
+        <div class="form-grupo">
+          <label>Duração por ep.</label>
+          <input type="text" id="duracao" placeholder="23 min/ep" />
+        </div>
+      </div>
+
+      <div class="form-grupo">
+        <label>URL da Capa <span id="capaCount" style="font-weight:400;color:#44446a;float:right">0/70</span></label>
+        <input type="text" id="capa" placeholder="https://cdn.myanimelist.net/images/..." maxlength="70" inputmode="url" oninput="contarChars('capa','capaCount',70)" />
+        <span id="capaAviso" style="display:none;font-size:11px;color:#f87171;margin-top:4px">⚠️ URL muito longa, tente encontrar uma imagem com URL menor.</span>
+      </div>
+
+      <div class="form-grupo">
+        <label>Sinopse <span id="sinopseCount" style="font-weight:400;color:#44446a;float:right">0/300</span></label>
+        <textarea id="sinopse" placeholder="Descreva o anime..." maxlength="300" oninput="contarChars('sinopse','sinopseCount',300)"></textarea>
+        <span id="sinopseAviso" style="display:none;font-size:11px;color:#f87171;margin-top:4px">⚠️ Para evitar sobrecarregar o site, resuma a sinopse mais um pouco.</span>
+      </div>
+
+      <hr class="divisor" />
+
+      <div class="painel-titulo" style="margin-bottom:14px">🎬 Temporadas, Filmes e OVAs</div>
+      <div class="temporadas-wrap" id="temporadasWrap"></div>
+
+      <div class="btn-add-group">
+        <button class="btn-add-temp" onclick="adicionarBloco('temporada')">+ Temporada</button>
+        <button class="btn-add-filme" onclick="adicionarBloco('filme')">🎬 Filme</button>
+        <button class="btn-add-ova" onclick="adicionarBloco('ova')">✨ OVA</button>
+      </div>
+
+      <div class="acoes">
+        <button class="btn-salvar" onclick="salvarAnime()">💾 Salvar Anime</button>
+        <button class="btn-limpar" onclick="limparForm()">Limpar</button>
+      </div>
+    </div>
+
+    <!-- LISTA DOS MEUS ANIMES -->
+    <div class="painel" style="margin-top:20px">
+      <div class="painel-titulo">📺 Meus Animes</div>
+      <div id="listaAnimes" style="display:flex;flex-direction:column;gap:10px">
+        <p style="color:#44446a;font-size:13px">Carregando...</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script>
+    let contBlocos = 0;
+    let animes = [];
+    let editandoId = null;
+    const colabEmail = sessionStorage.getItem('colab_email') || '';
+
+    // =============================
+    // VERIFICAÇÃO DE ACESSO
+    // =============================
+    if (sessionStorage.getItem('colab_email_ok') !== '1') {
+      window.location.href = 'admin-restrito-login.html';
+    }
+
+    document.getElementById('btnSair').addEventListener('click', () => {
+      sessionStorage.removeItem('colab_email_ok');
+      sessionStorage.removeItem('colab_email');
+      window.location.href = 'admin-restrito-login.html';
+    });
+
+    // =============================
+    // CARREGAR ANIMES DO COLABORADOR
+    // =============================
+    async function carregarMeusAnimes() {
+      const { data, error } = await sb.from('animes')
+        .select('*')
+        .eq('adicionado_por', colabEmail)
+        .order('nome');
+      if (error) return;
+      animes = (data || []).map(row => row.dados);
+      atualizarLista();
+    }
+
+    function atualizarLista() {
+      const lista = document.getElementById('listaAnimes');
+      if (!lista) return;
+      if (animes.length === 0) {
+        lista.innerHTML = '<p style="color:#44446a;font-size:13px">Nenhum anime adicionado por você ainda.</p>';
+        return;
+      }
+      lista.innerHTML = animes.map(a => `
+        <div class="anime-item">
+          <img src="${a.capa}" alt="${a.nome}" onerror="this.style.display='none'" />
+          <div class="anime-item-info">
+            <div class="anime-item-nome">${a.nome}</div>
+            <div class="anime-item-meta">${a.ano || '—'} · ${(a.temporadas||[]).length} bloco(s)</div>
+          </div>
+          <div class="anime-item-acoes">
+            <button class="btn-editar" onclick="editarAnime('${a.id}')">✏️</button>
+          </div>
+        </div>`).join('');
+    }
+
+    function editarAnime(id) {
+      const anime = animes.find(a => a.id === id);
+      if (!anime) return;
+
+      editandoId = id;
+      document.getElementById('formTitulo').textContent = 'Editar Anime';
+      document.getElementById('nome').value = anime.nome || '';
+      document.getElementById('nomeOriginal').value = anime.nomeOriginal || '';
+      document.getElementById('capa').value = anime.capa || '';
+      document.getElementById('ano').value = anime.ano || '';
+      document.getElementById('status').value = anime.status || 'em-andamento';
+      document.getElementById('classificacao').value = anime.classificacao || '14+';
+      document.getElementById('audio').value = anime.audio || '';
+      document.getElementById('estudio').value = anime.estudio || '';
+      document.getElementById('duracao').value = anime.duracao || '';
+      document.getElementById('sinopse').value = anime.sinopse || '';
+
+      document.querySelectorAll('.genero-cb').forEach(cb => {
+        cb.checked = (anime.genero || []).includes(cb.value);
+      });
+
+      document.getElementById('temporadasWrap').innerHTML = '';
+      contBlocos = 0;
+      (anime.temporadas || []).forEach(t => adicionarBloco(t.tipo || 'temporada', t));
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      mostrarToast('✏️ Editando: ' + anime.nome);
+    }
+
+    // =============================
+    // ADICIONAR BLOCO (temporada / filme / ova)
+    // =============================
+    function adicionarBloco(tipo, dados = null) {
+      contBlocos++;
+      const id = contBlocos;
+      const wrap = document.getElementById('temporadasWrap');
+
+      const tipoEmoji = { temporada: '📁', filme: '🎬', ova: '✨' };
+      const tipoNum = Array.from(wrap.querySelectorAll(`.bloco-tipo-${tipo}`)).length + 1;
+      const anoVal = dados?.ano || '';
+
+      const div = document.createElement('div');
+      div.className = `temporada-bloco bloco-tipo-${tipo}`;
+      div.dataset.id = id;
+      div.dataset.tipo = tipo;
+
+      let headerLabel = '';
+      if (tipo === 'temporada') {
+        headerLabel = `${tipoEmoji[tipo]} ${tipoNum}ª Temporada <span class="tipo-badge temporada">TEMPORADA</span>`;
+      } else if (tipo === 'filme') {
+        headerLabel = `${tipoEmoji[tipo]} Filme ${tipoNum} <span class="tipo-badge filme">FILME</span>`;
+      } else {
+        headerLabel = `${tipoEmoji[tipo]} OVA ${tipoNum} <span class="tipo-badge ova">OVA</span>`;
+      }
+
+      div.innerHTML = `
+        <div class="temporada-bloco-header">
+          <span class="temporada-bloco-titulo">${headerLabel}</span>
+          <button class="btn-remover" onclick="this.closest('.temporada-bloco').remove()">✕ Remover</button>
+        </div>
+        <div class="form-linha">
+          <div class="form-grupo">
+            <label>${tipo === 'filme' ? 'Nº do Filme' : (tipo === 'ova' ? 'Nº da OVA' : 'Nº da Temporada')}</label>
+            <input type="number" class="temp-num" value="${tipoNum}" min="1" />
+          </div>
+          <div class="form-grupo">
+            <label>Ano</label>
+            <input type="number" class="temp-ano" value="${anoVal}" placeholder="2024" />
+          </div>
+        </div>
+        <div class="episodios-form" data-bloco="${id}"></div>
+        <button class="btn-add-ep" onclick="adicionarEpisodio(${id})">+ Adicionar Episódio</button>
+      `;
+
+      wrap.appendChild(div);
+
+      if (dados?.episodios) {
+        dados.episodios.forEach(ep => adicionarEpisodio(id, ep));
+      } else {
+        adicionarEpisodio(id);
+      }
+    }
+
+    function adicionarEpisodio(blocoId, dados = null) {
+      const lista = document.querySelector(`[data-bloco="${blocoId}"]`);
+      const num = lista.children.length + 1;
+      const opcoes = dados?.opcoes || [];
+
+      const div = document.createElement('div');
+      div.className = 'ep-form-bloco';
+      if (dados?.adicionadoEm) div.dataset.adicionadoEm = dados.adicionadoEm;
+      if (dados?.url || dados?.opcoes?.length) div.dataset.jaTimhaUrl = '1';
+      div.innerHTML = `
+        <div class="ep-form-linha">
+          <input type="number" class="ep-num" value="${dados?.numero || num}" min="1" placeholder="Nº" />
+          <input type="text" class="ep-nome" value="${dados?.nome || ''}" placeholder="Nome do episódio" />
+          <input type="text" class="ep-dur" value="${dados?.duracao || '23 min'}" placeholder="Dur." />
+          <button class="btn-icon remover" onclick="this.closest('.ep-form-bloco').remove()" title="Remover">✕</button>
+        </div>
+        <div class="ep-opcoes-lista">
+          ${opcoes.map(op => criarOpcaoHTML(op)).join('')}
+        </div>
+        <button class="btn-add-opcao" onclick="adicionarOpcao(this)">+ Adicionar opção de player</button>
+      `;
+      lista.appendChild(div);
+
+      if (opcoes.length === 0) {
+        adicionarOpcao(div.querySelector('.btn-add-opcao'));
+      }
+    }
+
+    function criarOpcaoHTML(op = {}) {
+      return `
+        <div class="ep-opcao-linha-full">
+          <input type="text" class="op-nome" value="${op.nome || ''}" placeholder="Player (ex: Vidmoly)" />
+          <select class="op-qual">
+            <option value="SD" ${op.qualidade==='SD'?'selected':''}>SD</option>
+            <option value="HD" ${op.qualidade==='HD'?'selected':''}>HD</option>
+            <option value="1080p" ${op.qualidade==='1080p'?'selected':''}>1080p</option>
+            <option value="4K" ${op.qualidade==='4K'?'selected':''}>4K</option>
+          </select>
+          <input type="text" class="op-url" value="${op.url || ''}" placeholder="URL do iframe (embed)" inputmode="url" />
+          <button class="btn-icon remover" onclick="this.closest('.ep-opcao-linha-full').remove()" title="Remover">✕</button>
+        </div>`;
+    }
+
+    function adicionarOpcao(btn) {
+      const lista = btn.previousElementSibling;
+      lista.insertAdjacentHTML('beforeend', criarOpcaoHTML());
+    }
+
+    // =============================
+    // SALVAR ANIME — SOMENTE INSERT
+    // =============================
+    async function salvarAnime() {
+      const nome = document.getElementById('nome').value.trim();
+      const capa = document.getElementById('capa').value.trim();
+
+      if (!nome) { mostrarToast('Preencha o nome do anime!', true); return; }
+      if (!capa)  { mostrarToast('Adicione uma URL de capa!', true); return; }
+
+      const blocos = document.querySelectorAll('.temporada-bloco');
+      const temporadas = Array.from(blocos).map(bloco => {
+        const tipo = bloco.dataset.tipo || 'temporada';
+        const num = parseInt(bloco.querySelector('.temp-num').value) || 1;
+        const ano = parseInt(bloco.querySelector('.temp-ano').value) || 0;
+        const blocoId = bloco.dataset.id;
+        const episodios = Array.from(bloco.querySelectorAll('.ep-form-bloco')).map(linha => {
+          const opcoes = Array.from(linha.querySelectorAll('.ep-opcao-linha-full')).map(op => ({
+            nome: op.querySelector('.op-nome').value.trim() || 'Player',
+            qualidade: op.querySelector('.op-qual').value,
+            url: op.querySelector('.op-url').value.trim()
+          })).filter(op => op.url);
+          const temUrl = !!(opcoes[0]?.url);
+          const adicionadoEmExistente = linha.dataset.adicionadoEm || null;
+          const jaTimhaUrl = linha.dataset.jaTimhaUrl === '1';
+          const adicionadoEm = adicionadoEmExistente
+            || (!jaTimhaUrl && temUrl ? new Date().toISOString() : null);
+          return {
+            numero:  parseInt(linha.querySelector('.ep-num').value) || 1,
+            nome:    linha.querySelector('.ep-nome').value.trim() || 'Sem título',
+            duracao: linha.querySelector('.ep-dur').value.trim()  || '23 min',
+            url:     opcoes[0]?.url || '',
+            opcoes,
+            adicionadoEm
+          };
+        });
+        return { numero: num, ano, tipo, episodios };
+      });
+
+      const generos = Array.from(document.querySelectorAll('.genero-cb:checked')).map(cb => cb.value);
+      const id = nome.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+      // Colaborador NÃO pode sobrescrever anime existente
+      const { data: existente } = await sb.from('animes').select('id').eq('id', id).single();
+      if (existente) {
+        mostrarToast('❌ Já existe um anime com esse nome.', true);
+        return;
+      }
+
+      const anime = {
+        id,
+        nome,
+        nomeOriginal: document.getElementById('nomeOriginal').value.trim(),
+        capa,
+        banner: capa,
+        genero: generos,
+        ano: parseInt(document.getElementById('ano').value) || 0,
+        estudio: document.getElementById('estudio').value.trim(),
+        duracao: document.getElementById('duracao').value.trim() || '23 min/ep',
+        classificacao: document.getElementById('classificacao').value,
+        audio: document.getElementById('audio').value || null,
+        idioma: 'Japonês',
+        status: document.getElementById('status').value,
+        sinopse: document.getElementById('sinopse').value.trim(),
+        curtidas: 0,
+        avaliacao: { soma: 0, votos: 0 },
+        temporadas
+      };
+
+      const btn = document.querySelector('.btn-salvar');
+      btn.disabled = true;
+      btn.textContent = '💾 Salvando...';
+
+      let error;
+      if (editandoId) {
+        ({ error } = await sb.from('animes').update({ nome: anime.nome, dados: anime }).eq('id', editandoId));
+        if (!error) {
+          const idx = animes.findIndex(a => a.id === editandoId);
+          if (idx !== -1) animes[idx] = anime;
+          atualizarLista();
+          limparForm();
+          mostrarToast('✅ Anime atualizado com sucesso!');
+        }
+      } else {
+        ({ error } = await sb.from('animes').insert({
+          id: anime.id,
+          nome: anime.nome,
+          dados: anime,
+          adicionado_por: colabEmail
+        }));
+        if (!error) {
+          animes.push(anime);
+          atualizarLista();
+          limparForm();
+          mostrarToast('✅ Anime adicionado com sucesso!');
+        }
+      }
+
+      if (error) {
+        mostrarToast('❌ Erro ao salvar: ' + error.message, true);
+      }
+
+      btn.disabled = false;
+      btn.textContent = '💾 Salvar Anime';
+    }
+
+    // =============================
+    // LIMPAR FORMULÁRIO
+    // =============================
+    function limparForm() {
+      editandoId = null;
+      document.getElementById('formTitulo').textContent = 'Adicionar Novo Anime';
+      ['nome','nomeOriginal','capa','ano','estudio','duracao','sinopse']
+        .forEach(id => document.getElementById(id).value = '');
+      document.querySelectorAll('.genero-cb').forEach(cb => cb.checked = false);
+      document.getElementById('status').value = 'em-andamento';
+      document.getElementById('classificacao').value = '14+';
+      document.getElementById('audio').value = '';
+      document.getElementById('temporadasWrap').innerHTML = '';
+      contBlocos = 0;
+    }
+
+    // =============================
+    // TOAST
+    // =============================
+    function mostrarToast(msg, erro = false) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = 'toast visivel' + (erro ? ' erro' : '');
+      setTimeout(() => toast.className = 'toast', 3000);
+    }
+
+    // =============================
+    // CONTADOR DE CARACTERES
+    // =============================
+    function contarChars(campoId, contadorId, limite) {
+      const campo = document.getElementById(campoId);
+      const contador = document.getElementById(contadorId);
+      const atual = campo.value.length;
+      contador.textContent = `${atual}/${limite}`;
+      contador.style.color = atual >= limite ? '#f87171' : atual >= limite * 0.85 ? '#fbbf24' : '#44446a';
+
+      const avisos = {
+        nome:         { id: 'nomeAviso',         msg: '⚠️ Título muito longo, por favor encurte o nome do anime.' },
+        nomeOriginal: { id: 'nomeOriginalAviso',  msg: '⚠️ Título original muito longo, por favor encurte.' },
+        capa:         { id: 'capaAviso',          msg: '⚠️ URL muito longa, tente encontrar uma imagem com URL menor.' },
+        sinopse:      { id: 'sinopseAviso',       msg: '⚠️ Para evitar sobrecarregar o site, resuma a sinopse mais um pouco.' },
+      };
+
+      const aviso = avisos[campoId];
+      if (aviso) {
+        const el = document.getElementById(aviso.id);
+        if (el) el.style.display = atual >= limite ? 'block' : 'none';
+      }
+    }
+
+    // INIT
+    carregarMeusAnimes();
+  </script>
+</body>
+</html>

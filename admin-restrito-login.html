@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acesso Restrito — Banzai Animes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #08080f;
+      color: #e8e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-box {
+      background: #0e0e1a;
+      border: 1px solid rgba(139,92,246,0.15);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .login-logo span {
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #a78bfa, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .login-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+    .login-badge span {
+      background: rgba(16,185,129,0.12);
+      border: 1px solid rgba(16,185,129,0.3);
+      color: #34d399;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .login-titulo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #e8e8f0;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .login-sub {
+      font-size: 13px;
+      color: #44446a;
+      text-align: center;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .form-grupo { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-grupo label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #6060a0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-grupo input {
+      background: #0b0b16;
+      border: 1px solid rgba(139,92,246,0.15);
+      border-radius: 9px;
+      color: #e8e8f0;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 12px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+    .form-grupo input:focus {
+      border-color: rgba(124,58,237,0.5);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.07);
+    }
+
+    .btn-primary {
+      padding: 13px;
+      background: #7c3aed;
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .btn-primary:hover { background: #6d28d9; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .msg {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .msg.erro { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: #f87171; display: block; }
+    .msg.sucesso { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: #34d399; display: block; }
+
+    .acesso-negado {
+      text-align: center;
+      padding: 20px 0;
+      display: none;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .acesso-negado-icon { font-size: 48px; }
+    .acesso-negado h2 { font-size: 18px; color: #f87171; }
+    .acesso-negado p { font-size: 13px; color: #44446a; line-height: 1.6; }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <div class="login-logo">
+      <a href="index.html"><img src="image/logo.png" alt="Banzai Animes" style="height:44px;width:auto;" /></a>
+    </div>
+    <div class="login-badge"><span>📋 PAINEL DE COLABORADOR</span></div>
+
+    <div class="login-titulo">Acesso de Colaborador</div>
+    <p class="login-sub">Digite o e-mail cadastrado pelo administrador para acessar o painel.</p>
+
+    <div class="msg" id="msg"></div>
+
+    <div id="formLogin">
+      <div class="form-grupo">
+        <label>E-mail</label>
+        <input type="email" id="email" placeholder="seu@email.com"
+          onkeydown="if(event.key==='Enter') verificarEmail()" />
+      </div>
+      <button class="btn-primary" id="btnEntrar" onclick="verificarEmail()">Entrar</button>
+    </div>
+
+    <div class="acesso-negado" id="acessoNegado">
+      <div class="acesso-negado-icon">🔒</div>
+      <h2>Acesso Negado</h2>
+      <p>Este e-mail não está autorizado como colaborador.<br>Entre em contato com um administrador.</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script>
+    // Se já passou pela verificação nessa sessão, vai direto pro painel
+    if (sessionStorage.getItem('colab_email_ok') === '1') {
+      window.location.href = 'admin-restrito.html';
+    }
+
+    function mostrarMsg(texto, tipo) {
+      const el = document.getElementById('msg');
+      el.textContent = texto;
+      el.className = `msg ${tipo}`;
+    }
+
+    async function verificarEmail() {
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const btn = document.getElementById('btnEntrar');
+
+      if (!email) { mostrarMsg('Digite seu e-mail.', 'erro'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Verificando...';
+
+      // Busca na tabela admin_membros pelo email, aprovado = true
+      const { data, error } = await sb
+        .from('admin_membros')
+        .select('aprovado, email')
+        .ilike('email', email)
+        .single();
+
+      if (error || !data || data.aprovado !== true) {
+        document.getElementById('formLogin').style.display = 'none';
+        document.getElementById('acessoNegado').style.display = 'flex';
+        return;
+      }
+
+      // Email aprovado — salva na sessionStorage e libera acesso
+      sessionStorage.setItem('colab_email_ok', '1');
+      sessionStorage.setItem('colab_email', data.email);
+
+      mostrarMsg('Acesso liberado!', 'sucesso');
+      setTimeout(() => { window.location.href = 'admin-restrito.html'; }, 800);
+    }
+  </script>
+</body>
+</html>
