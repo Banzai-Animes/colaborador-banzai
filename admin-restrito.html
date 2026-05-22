@@ -595,8 +595,8 @@
       <div class="painel-titulo">📋 <span id="formTitulo">Adicionar Novo Anime</span></div>
 
       <div class="form-grupo">
-        <label>Nome do Anime <span id="nomeCount" style="font-weight:400;color:#44446a;float:right">0/120</span></label>
-        <input type="text" id="nome" placeholder="Ex: Naruto" maxlength="120" oninput="contarChars('nome','nomeCount',120)" />
+        <label>Nome do Anime <span id="nomeCount" style="font-weight:400;color:#44446a;float:right">0/130</span></label>
+        <input type="text" id="nome" placeholder="Ex: Naruto" maxlength="130" oninput="contarChars('nome','nomeCount',130)" />
         <span id="nomeAviso" style="display:none;font-size:11px;color:#f87171;margin-top:4px">⚠️ Título muito longo, por favor encurte o nome do anime.</span>
       </div>
 
@@ -684,8 +684,8 @@
 
       <div class="form-linha">
         <div class="form-grupo">
-          <label>Estúdio</label>
-          <input type="text" id="estudio" placeholder="Ex: MAPPA" />
+          <label>Estúdios</label>
+          <input type="text" id="estudio" placeholder="Ex: MAPPA & Toei" />
         </div>
         <div class="form-grupo">
           <label>Duração por ep.</label>
@@ -694,14 +694,15 @@
       </div>
 
       <div class="form-grupo">
-        <label>URL da Capa <span id="capaCount" style="font-weight:400;color:#44446a;float:right">0/100</span></label>
-        <input type="text" id="capa" placeholder="https://cdn.myanimelist.net/images/..." maxlength="100" inputmode="url" oninput="contarChars('capa','capaCount',100)" />
+        <label>URL da Capa <span id="capaCount" style="font-weight:400;color:#44446a;float:right">0/130</span></label>
+        <input type="text" id="capa" placeholder="https://cdn.myanimelist.net/images/..." maxlength="130" inputmode="url" oninput="contarChars('capa','capaCount',130)" />
         <span id="capaAviso" style="display:none;font-size:11px;color:#f87171;margin-top:4px">⚠️ URL muito longa, tente encontrar uma imagem com URL menor.</span>
+        <span id="capaFormatoAviso" style="display:none;font-size:11px;color:#f87171;margin-top:4px">⚠️ A URL deve terminar com .jpg, .jpeg, .png ou .webp.</span>
       </div>
 
       <div class="form-grupo">
-        <label>Sinopse <span id="sinopseCount" style="font-weight:400;color:#44446a;float:right">0/500</span></label>
-        <textarea id="sinopse" placeholder="Descreva o anime..." maxlength="500" oninput="contarChars('sinopse','sinopseCount',500)"></textarea>
+        <label>Sinopse <span id="sinopseCount" style="font-weight:400;color:#44446a;float:right">0/800</span></label>
+        <textarea id="sinopse" placeholder="Descreva o anime..." maxlength="800" oninput="contarChars('sinopse','sinopseCount',800)"></textarea>
         <span id="sinopseAviso" style="display:none;font-size:11px;color:#f87171;margin-top:4px">⚠️ Para evitar sobrecarregar o site, resuma a sinopse mais um pouco.</span>
       </div>
 
@@ -1072,6 +1073,19 @@
       if (aviso) {
         const el = document.getElementById(aviso.id);
         if (el) el.style.display = atual >= limite ? 'block' : 'none';
+      }
+
+      // Validação de extensão para URL da capa
+      if (campoId === 'capa') {
+        const urlAviso = document.getElementById('capaFormatoAviso');
+        const extensoesValidas = ['.jpg', '.jpeg', '.png', '.webp'];
+        const urlAtual = document.getElementById('capa').value.trim().toLowerCase();
+        const valida = extensoesValidas.some(ext => urlAtual.endsWith(ext));
+        if (urlAtual.length > 0 && !valida) {
+          urlAviso.style.display = 'block';
+        } else {
+          urlAviso.style.display = 'none';
+        }
       }
     }
 
