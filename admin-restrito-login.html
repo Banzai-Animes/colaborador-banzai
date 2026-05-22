@@ -217,7 +217,7 @@
     try {
       const res = await fetch('https://raw.githubusercontent.com/Banzai-Animes/colaborador-banzai/main/version.json');
       const { version, apk } = await res.json();
-      const versaoAtual = '1.0.1';
+      const versaoAtual = '1.0.2';
       if (version !== versaoAtual) {
         const confirmar = confirm(`Nova versão ${version} disponível! Clique em OK para baixar.`);
         if (confirmar) window.open(apk, '_blank');
