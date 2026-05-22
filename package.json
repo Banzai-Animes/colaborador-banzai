@@ -1,9 +1,15 @@
 {
   "name": "banzai-colaborador",
-  "version": "1.5.0",
+  "version": "1.0.1",
   "description": "Painel de Colaborador — Banzai Animes",
   "main": "main-restrito.js",
   "author": "Banzai Animes",
+  "publish": {
+    "provider": "github",
+    "owner": "Banzai-Animes",
+    "repo": "colaborador-banzai",
+    "private": true
+  },
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
@@ -28,6 +34,7 @@
     "electron": "^41.2.2"
   },
   "dependencies": {
+    "@capawesome/capacitor-app-update": "^8.0.3",
     "electron-squirrel-startup": "^1.0.1"
   }
 }
