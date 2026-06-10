@@ -146,7 +146,7 @@
     <div class="login-logo">
       <a href="index.html"><img src="image/logo.png" alt="Banzai Animes" style="height:44px;width:auto;" /></a>
     </div>
-    <div class="login-badge"><span>📋 PAINEL DE COLABORADOR</span></div>
+    <div class="login-badge"><span>PAINEL DE COLABORADOR</span></div>
 
     <div class="login-titulo">Acesso de Colaborador</div>
     <p class="login-sub">Digite o e-mail cadastrado pelo administrador para acessar o painel.</p>
@@ -212,7 +212,7 @@
       mostrarMsg('Acesso liberado!', 'sucesso');
       setTimeout(() => { window.location.href = 'admin-restrito.html'; }, 800);
     }
-    
+
   async function verificarAtualizacao() {
     try {
       const res = await fetch('https://raw.githubusercontent.com/Banzai-Animes/colaborador-banzai/main/version.json');
